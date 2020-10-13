@@ -10,7 +10,7 @@ from sklearn.linear_model import LinearRegression
 import joblib
 
 def getFxRatesForPairs(pairName):
-    df = pd.read_csv("data_source/fx_rates_aud-USD.csv")
+    df = pd.read_csv("C:\\Users\\Srivastava_Am\\PycharmProjects\\exchange-rate-prediction\\data_source\\fx_rates_aud-USD.csv")
     df = df.replace('ND', np.nan)
     df = df.dropna().reset_index(drop=True)
     df.isna().sum()
@@ -23,7 +23,7 @@ def getFxRatesForPairs(pairName):
     return df.groupby('month_year').AUD_USD.mean().reset_index()
 
 def getIrdData(pairName):
-    ir_df = pd.read_csv("data_source/aud-usd-ird.csv")
+    ir_df = pd.read_csv("C:\\Users\\Srivastava_Am\\PycharmProjects\\exchange-rate-prediction\\data_source\\aud-usd-ird.csv")
     ir_df = ir_df[(ir_df['Date'] >= '2016-03-01') &
                   (ir_df['Date'] <= '2020-04-02')]
     ir_df = ir_df['Long Carry'].astype(str)
@@ -34,8 +34,8 @@ def getIrdData(pairName):
     return np.array(ir_df).reshape(-1, 1)
 
 def getGdpDiff(pairName):
-    aus_gdp = pd.read_csv("data_source/aus-gdp-rate.csv")
-    usa_gdp = pd.read_csv("data_source/usd-gdp-rate.csv")
+    aus_gdp = pd.read_csv("C:\\Users\\Srivastava_Am\\PycharmProjects\\exchange-rate-prediction\\data_source\\aus-gdp-rate.csv")
+    usa_gdp = pd.read_csv("C:\\Users\\Srivastava_Am\\PycharmProjects\\exchange-rate-prediction\\data_source\\usd-gdp-rate.csv")
 
     aus_gdp['DATE'] = pd.to_datetime(aus_gdp['DATE']).dt.to_period('M')
     aus_gdp = aus_gdp.set_index('DATE').resample('M').interpolate()
@@ -57,8 +57,8 @@ def getGdpDiff(pairName):
     return gdp_diff
 
 def getCPIDiff(pairName):
-    aus_cpi = pd.read_csv("data_source/AUS-CPI.csv")
-    usa_cpi = pd.read_csv("data_source/USA-CPI.csv")
+    aus_cpi = pd.read_csv("C:\\Users\\Srivastava_Am\\PycharmProjects\\exchange-rate-prediction\\data_source\\AUS-CPI.csv")
+    usa_cpi = pd.read_csv("C:\\Users\\Srivastava_Am\\PycharmProjects\\exchange-rate-prediction\\data_source\\USA-CPI.csv")
 
     aus_cpi['DATE'] = pd.to_datetime(aus_cpi['DATE']).dt.to_period('M')
     aus_cpi = aus_cpi.set_index('DATE').resample('M').interpolate()
@@ -102,11 +102,11 @@ def createMultiLinearModel():
     y_fx_predict_4 = model.predict(x_ir_gdp_cpi)
     print(model.score(x_ir_gdp_cpi, y_fx))
     joblib.dump(model, 'fx_predict_model.model')
-    cpi_diff = [{i: float(j)} for i, j in zip(y_fx['month_year'], cpi_diff)]
-    gdp_diff = [{i: float(j)} for i, j in zip(y_fx['month_year'], gdp_diff)]
-    x_ir  = [{i: float(j)} for i, j in zip(y_fx['month_year'], x_ir)]
-    y_fx = [{i: float(j)} for i, j in zip(y_fx['month_year'], y_fx)]
-    y_fx_predict_4 = [{i: float(j)} for i, j in zip(y_fx['month_year'], y_fx_predict_4)]
+    cpi_diff = [{i: float(j)} for i, j in zip(audUsdFxRates['month_year'].astype(str), cpi_diff)]
+    gdp_diff = [{i: float(j)} for i, j in zip(audUsdFxRates['month_year'].astype(str), gdp_diff)]
+    x_ir  = [{i: float(j)} for i, j in zip(audUsdFxRates['month_year'].astype(str), x_ir)]
+    y_fx = [{i: float(j)} for i, j in zip(audUsdFxRates['month_year'].astype(str), y_fx)]
+    y_fx_predict_4 = [{i: float(j)} for i, j in zip(audUsdFxRates['month_year'].astype(str), y_fx_predict_4)]
     joblib.dump({'cpi_diff': cpi_diff, 'gdp_diff': gdp_diff, 'x_ir': x_ir, 'y_fx': y_fx,
                  'y_fx_predict_4': y_fx_predict_4}
                 , 'array.dump')
