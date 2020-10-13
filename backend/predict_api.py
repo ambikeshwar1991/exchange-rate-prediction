@@ -1,6 +1,8 @@
 
 import os
 import joblib
+import json
+
 from flask_cors import CORS, cross_origin
 from flask import Flask, jsonify, request
 from flask_restful import Api, Resource
@@ -10,6 +12,7 @@ CORS(app)
 api = Api(app)
 
 model = joblib.load('../fx_predict_model.model')
+plot_array = joblib.load('../array.dump')
 
 class MakePrediction(Resource):
     @staticmethod
@@ -24,6 +27,7 @@ class MakePrediction(Resource):
         #score_m = model.score([[ird, cpi_diff, gdp_diff]])
         return jsonify({
             'Prediction': prediction,
+            'plot_array': json.dumps(plot_array)
         })
 
 
