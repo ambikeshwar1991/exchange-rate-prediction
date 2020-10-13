@@ -102,7 +102,13 @@ def createMultiLinearModel():
     y_fx_predict_4 = model.predict(x_ir_gdp_cpi)
     print(model.score(x_ir_gdp_cpi, y_fx))
     joblib.dump(model, 'fx_predict_model.model')
-    joblib.dump({'cpi_diff':cpi_diff , 'gdp_diff':gdp_diff, 'x_ir':x_ir, 'y_fx':y_fx, 'y_fx_predict_4' : list(y_fx_predict_4)}
+    cpi_diff = [{i: float(j)} for i, j in zip(y_fx['month_year'], cpi_diff)]
+    gdp_diff = [{i: float(j)} for i, j in zip(y_fx['month_year'], gdp_diff)]
+    x_ir  = [{i: float(j)} for i, j in zip(y_fx['month_year'], x_ir)]
+    y_fx = [{i: float(j)} for i, j in zip(y_fx['month_year'], y_fx)]
+    y_fx_predict_4 = [{i: float(j)} for i, j in zip(y_fx['month_year'], y_fx_predict_4)]
+    joblib.dump({'cpi_diff': cpi_diff, 'gdp_diff': gdp_diff, 'x_ir': x_ir, 'y_fx': y_fx,
+                 'y_fx_predict_4': y_fx_predict_4}
                 , 'array.dump')
 if __name__ == '__main__':
     createMultiLinearModel()
