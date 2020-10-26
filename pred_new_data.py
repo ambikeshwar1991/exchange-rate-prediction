@@ -7,7 +7,7 @@ from sklearn.linear_model import LinearRegression
 
 
 def getDataFromCsv():
-    df = pd.read_csv('C:\\Users\\Srivastava_Am\\PycharmProjects\\exchange-rate-prediction\\data_source\\prediction_tool_data.csv')
+    df = pd.read_csv('data_source/prediction_tool_data.csv')
     df = df.interpolate(method='linear', axis=0).ffill().bfill()
     return df
 
